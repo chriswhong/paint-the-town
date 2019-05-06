@@ -1,0 +1,33 @@
+const express = require('express');
+const path = require('path');
+
+// use .env for local environment variables
+require('dotenv').config();
+
+// instantiate express app
+const app = express();
+
+// require pg-promise
+const pgp = require('pg-promise')({
+  query(e) {
+     (process.env.DEBUG === 'true') ? console.log(e.query) : null; // eslint-disable-line
+  },
+});
+
+// initialize database connection
+app.db = pgp(process.env.DATABASE_URL);
+
+// allows CORS
+app.all('*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
+  next();
+});
+
+// serve static files
+app.use('/', express.static('public'))
+
+app.use('/tiles', require('./routes/tiles'))
+
+
+module.exports = app;

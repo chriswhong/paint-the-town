@@ -1,0 +1,56 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Paint the Town</title>
+    <meta name="description" content="Paint the Town">
+
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css" rel="stylesheet" />
+    <style>
+      html, body, #mapContainer {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="mapContainer">
+    </div>
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+    <script type="text/javascript">
+      // sets up my mapbox access token so they can track my usage of their basemap services
+      mapboxgl.accessToken = 'pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmYTQ2YzBmMTM0ZDAyIn0.owNd_Qa7Sw2neNJbK6zc1A';
+
+      // instantiate the map
+      var map = new mapboxgl.Map({
+        container: 'mapContainer',
+        style: 'mapbox://styles/mapbox/light-v9',
+        center: [-73.951,40.728],
+        zoom: 15,
+      });
+
+      map.on('style.load', () => {
+        map.addSource('pluto', {
+          type: 'vector',
+          tiles: ['http://localhost:3000/tiles/{z}/{x}/{y}.mvt'],
+        });
+
+        map.addLayer({
+          id: 'pluto',
+          type: 'line',
+          source: 'pluto',
+          'source-layer': 'pluto',
+          paint: {
+            'line-width': 0.1,
+            'line-opacity': 0.5,
+          }
+        })
+      });
+    </script>
+  </body>
+</html>
