@@ -23,17 +23,25 @@ router.get('/:z/:x/:y.mvt', async (req, res) => {
     SELECT ST_AsMVT(q, 'pluto', 4096, 'geom')
     FROM (
       SELECT
-        bbl,
+        a.bbl,
         address,
-        ST_AsMVTGeom(
-          mappluto.geom,
-          tileBounds.geom,
-          4096,
-          256,
-          false
-        ) geom
-      FROM mappluto, tilebounds
-      WHERE mappluto.geom && tilebounds.geom
+        geom,
+        CASE WHEN color IS NOT NULL THEN color ELSE '#FFF' END AS color
+  	  FROM (
+  		 SELECT
+  			mappluto.bbl,
+  			address,
+  			ST_AsMVTGeom(
+  			  mappluto.geom,
+  			  tileBounds.geom,
+  			  4096,
+  			  256,
+  			  false
+  			) geom
+  		  FROM mappluto, tilebounds
+  		  WHERE mappluto.geom && tilebounds.geom
+  	   ) a
+  	   LEFT JOIN colors ON a.bbl = colors.bbl
     ) q
   `;
 

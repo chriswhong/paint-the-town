@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 // use .env for local environment variables
 require('dotenv').config();
@@ -27,7 +28,10 @@ app.all('*', (req, res, next) => {
 // serve static files
 app.use('/', express.static('public'))
 
+app.use(bodyParser.json());
+
 app.use('/tiles', require('./routes/tiles'))
+app.use('/colors', require('./routes/colors'))
 
 
 module.exports = app;
