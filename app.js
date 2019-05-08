@@ -7,6 +7,8 @@ require('dotenv').config();
 
 // instantiate express app
 const app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 // require pg-promise
 const pgp = require('pg-promise')({
@@ -17,6 +19,11 @@ const pgp = require('pg-promise')({
 
 // initialize database connection
 app.db = pgp(process.env.DATABASE_URL);
+
+// socket.io events
+io.on( "connection", function( socket ) {
+    console.log( "A user connected" );
+});
 
 // allows CORS
 app.all('*', (req, res, next) => {
@@ -34,4 +41,4 @@ app.use('/tiles', require('./routes/tiles'))
 app.use('/colors', require('./routes/colors'))
 
 
-module.exports = app;
+module.exports = {app: app, server: server};

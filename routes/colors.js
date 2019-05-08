@@ -26,7 +26,9 @@ router.post('/', async (req, res) => {
   if (validateInputs(bbl, color)) {
     // write to database
     try {
-      const tile = await app.db.none(insertColorQuery, [bbl, color]);
+      await app.db.none(insertColorQuery, [bbl, color]);
+
+      // app.io.sockets.emit('foo', 'bar');
 
       res.send({
         status: 'success',
