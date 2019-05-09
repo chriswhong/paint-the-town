@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const validateInputs = (bbl, color) => {
+const validateInputs = (bbl, color, username) => {
   // validate bbl
   const bblRegex = /^[1-5]{1}[0-9]{5}[0-9]{4}$/;
   const bblMatch = bbl.match(bblRegex);
@@ -12,36 +12,51 @@ const validateInputs = (bbl, color) => {
   const colorMatch = color.match(colorRegex);
   if (!colorMatch) return false;
 
+  // validate username
+  if ((username.length < 4) || (username.length > 15)) return false;
+
   return true;
 };
 
-const insertColorQuery = `INSERT INTO colors(bbl, color, timestamp) VALUES($1, $2, NOW())`
+const insertColorQuery = `INSERT INTO colors(bbl, color, username, timestamp) VALUES($1, $2, $3, NOW())`
 
 /* POST /colors */
-/* Save a bbl + color to the database */
+/* Save a bbl, color, username, and timestamp to the database */
 router.post('/', async (req, res) => {
   const { app } = req;
-  const { bbl, color } = req.body;
+  const { bbl, color, username } = req.body;
 
-  if (validateInputs(bbl, color)) {
+  if (validateInputs(bbl, color, username)) {
     // write to database
     try {
-      await app.db.none(insertColorQuery, [bbl, color]);
+      await app.db.none(insertColorQuery, [bbl, color, username]);
 
       // get geometry
       const { geometry } = await app.db.one(`
-        SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geometry
+        SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geometry,
+        mappluto.bbl,
+        color,
+        username,
+        timestamp
         FROM mappluto
-        WHERE bbl = $1
+        LEFT JOIN (
+          SELECT distinct on (bbl) * from colors
+          ORDER BY bbl, timestamp DESC
+        ) uniquecolors
+        ON mappluto.bbl = uniquecolors.bbl
+        WHERE mappluto.bbl = $1
       `, bbl);
 
+      // broadcast the new feature to connected clients via socket.io
       app.io.send({
         type: 'colorEvent',
         feature: {
           type: 'Feature',
           geometry: JSON.parse(geometry),
           properties: {
+            bbl,
             color,
+            username,
           }
         }
       });
@@ -55,8 +70,6 @@ router.post('/', async (req, res) => {
         error: e.toString(),
       });
     }
-
-
   } else {
     res.status(400).send({
       status: 'error',

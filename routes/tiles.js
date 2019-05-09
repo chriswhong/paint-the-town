@@ -26,6 +26,8 @@ router.get('/:z/:x/:y.mvt', async (req, res) => {
         a.bbl,
         address,
         geom,
+        username,
+        timestamp,
         CASE WHEN color IS NOT NULL THEN color ELSE '#FFF' END AS color
   	  FROM (
   		 SELECT
@@ -41,7 +43,11 @@ router.get('/:z/:x/:y.mvt', async (req, res) => {
   		  FROM mappluto, tilebounds
   		  WHERE mappluto.geom && tilebounds.geom
   	   ) a
-  	   LEFT JOIN colors ON a.bbl = colors.bbl
+       LEFT JOIN (
+         SELECT distinct on (bbl) * from colors
+         ORDER BY bbl, timestamp DESC
+       ) uniquecolors
+       ON a.bbl = uniquecolors.bbl
     ) q
   `;
 

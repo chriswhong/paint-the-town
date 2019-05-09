@@ -8,6 +8,8 @@ require('dotenv').config();
 // instantiate express app
 const app = express();
 var server = require('http').Server(app);
+
+// set up socket.io, which will listen on the same port as the express server
 app.io = require('socket.io')(server);
 
 // require pg-promise
@@ -34,7 +36,7 @@ app.all('*', (req, res, next) => {
 
 // serve static files
 app.use('/', express.static('public'))
-
+// parse JSON request bodies
 app.use(bodyParser.json());
 
 app.use('/tiles', require('./routes/tiles'))
