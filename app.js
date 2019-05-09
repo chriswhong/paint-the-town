@@ -8,7 +8,7 @@ require('dotenv').config();
 // instantiate express app
 const app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+app.io = require('socket.io')(server);
 
 // require pg-promise
 const pgp = require('pg-promise')({
@@ -21,7 +21,7 @@ const pgp = require('pg-promise')({
 app.db = pgp(process.env.DATABASE_URL);
 
 // socket.io events
-io.on( "connection", function( socket ) {
+app.io.on( "connection", function( socket ) {
     console.log( "A user connected" );
 });
 

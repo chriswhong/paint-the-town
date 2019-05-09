@@ -28,7 +28,23 @@ router.post('/', async (req, res) => {
     try {
       await app.db.none(insertColorQuery, [bbl, color]);
 
-      // app.io.sockets.emit('foo', 'bar');
+      // get geometry
+      const { geometry } = await app.db.one(`
+        SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geometry
+        FROM mappluto
+        WHERE bbl = $1
+      `, bbl);
+
+      app.io.send({
+        type: 'colorEvent',
+        feature: {
+          type: 'Feature',
+          geometry: JSON.parse(geometry),
+          properties: {
+            color,
+          }
+        }
+      });
 
       res.send({
         status: 'success',
