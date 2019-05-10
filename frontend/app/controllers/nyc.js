@@ -12,7 +12,7 @@ export default Controller.extend({
     this._super(...arguments);
 
     // connect to socket.io server
-    const socket = this.socketIOService.socketFor(`http://localhost:3000/`);
+    const socket = this.socketIOService.socketFor(ENV.host);
     socket.on('message', this.onMessage, this);
 
     // get username
@@ -44,7 +44,7 @@ export default Controller.extend({
   // primary vector tile source for tax lots with color, bbl, address, username, and timestamp
   plutoSource: {
     type: 'vector',
-    tiles: ['http://localhost:3000/tiles/{z}/{x}/{y}.mvt'],
+    tiles: [`${ENV.host}/tiles/{z}/{x}/{y}.mvt`],
   },
 
   plutoLineLayer: {
@@ -209,7 +209,7 @@ export default Controller.extend({
       // remember username
       window.localStorage.setItem('username', this.get('username'));
 
-      fetch('http://localhost:3000/colors', {
+      fetch(`${ENV.host}/colors`, {
         method: 'post',
         headers: {
           'Content-type': 'application/json',

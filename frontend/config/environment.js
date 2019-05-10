@@ -3,6 +3,7 @@
 module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'frontend',
+    host: 'http://paintthetown-api.chriswhong.com',
     environment,
     rootURL: '/',
     locationType: 'auto',

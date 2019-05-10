@@ -37,7 +37,7 @@
       map.on('style.load', () => {
         map.addSource('pluto', {
           type: 'vector',
-          tiles: ['http://localhost:3000/tiles/{z}/{x}/{y}.mvt'],
+          tiles: [`${ENV.host}/tiles/{z}/{x}/{y}.mvt`],
         });
 
         map.addLayer({
