@@ -1,0 +1,67 @@
+{{#if selectedFeature}}
+  {{log selectedFeature}}
+  <div id="color-picker-container">
+    <h3>{{selectedFeature.properties.address}}</h3>
+    {{#if selectedFeature.properties.username}}
+      <p>{{selectedFeature.properties.username}} painted this lot {{selectedFeature.properties.color}} on {{selectedFeature.properties.timestamp}}</p>
+    {{else}}
+      <p>Be the first to paint this lot!</p>
+    {{/if}}
+    {{color-picker
+      format="hex"
+      default=lastColor
+      showAlways=true
+      onChange=(action "handleColorChange")
+      components=(hash
+        opacity=false
+        interaction=(hash hex=false rgba=false hsva=false save=false clear=false)
+      )
+    }}
+    <div id="controls" class="row">
+      <div class="col-md-6">
+        <div class="form-group ">
+          {{input type="text" class="form-control" value=username keyPress=(action "updateUsername") size="15" placeholder="Enter a Nickname"}}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <button type="button" class="btn btn-success" {{action "handlePaint"}} disabled={{not isValid}}>Paint!</button>
+        <button type="button" class="btn btn-secondary" {{action "handleCancel"}}>Cancel</button>
+      </div>
+    </div>
+  </div>
+{{/if}}
+
+{{#mapbox-gl
+  class='map-container'
+  initOptions=mapInit
+  mapLoaded=(action 'mapLoaded')
+  as |map|
+}}
+  {{map.on 'click' (action 'mapClicked')}}
+
+  {{#map.source
+    options=plutoSource
+    as |source|
+  }}
+    {{source.layer layer=plutoFillLayer before='tunnel-street-low'}}
+    {{source.layer layer=plutoLineLayer before='tunnel-street-low'}}
+  {{/map.source}}
+  {{#if selectedFeature}}
+    {{#map.source
+      options=selectedFeatureSource
+      as |source|
+    }}
+      {{source.layer layer=selectedFeatureFillLayer before='tunnel-street-low'}}
+      {{source.layer layer=selectedFeatureLineLayer before='tunnel-street-low'}}
+    {{/map.source}}
+  {{/if}}
+
+  {{#map.source
+    options=tempFeaturesSource
+    as |source|
+  }}
+    {{source.layer layer=tempFeaturesFillLayer before='tunnel-street-low'}}
+  {{/map.source}}
+{{/mapbox-gl}}
+
+{{outlet}}

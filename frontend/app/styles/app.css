@@ -1,0 +1,76 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body > .ember-view {
+  height: 100%;
+}
+
+.map-container {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 3px solid #b3bfbf;
+}
+
+button.pcr-button {
+  opacity:0.01;
+}
+
+.pcr-app {
+  top: auto !important;
+  left: 35px !important;
+  bottom: 90px;
+  opacity: 1;
+  visibility: visible;
+  box-shadow: none;
+}
+
+#color-picker-container {
+  display: block;
+  height:350px;
+  background: white;
+  position: absolute;
+  z-index: 1;
+  width: 456px;
+  bottom: 35px;
+  left: 35px;
+  padding: 15px;
+  box-shadow: 0 0.15em 1.5em 0 rgba(0,0,0,.1), 0 0 1em 0 rgba(0,0,0,.03);
+}
+
+#controls {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  bottom: 0;
+  text-align: right;
+}
+
+.navbar {
+  z-index: 10;
+}
+
+.navbar-brand {
+  display: inline-block;
+  padding-top: 0.16rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+  font-size: 1.6rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+.navbar-brand img {
+  height: 38px;
+  margin-right: 10px;
+  position: relative;
+  top: -2px;
+}
