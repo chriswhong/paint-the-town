@@ -173,7 +173,8 @@ export default Controller.extend({
         layers: ['pluto-fill', 'temp-features-fill']
       });
 
-      feature.properties.proposedColor = feature.properties.color;
+      feature.properties.proposedColor = this.get('lastColor');
+      console.log(feature);
 
       if (feature) {
         // set selectedFeature
