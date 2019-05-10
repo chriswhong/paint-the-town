@@ -17,7 +17,7 @@ export default Controller.extend({
 
     // get username
     const username = window.localStorage.getItem('username');
-    this.set('username', username);
+    this.set('username', username || '');
 
   },
 
