@@ -1,56 +1,48 @@
-<!doctype html>
-
-<html lang="en">
+<!DOCTYPE html>
+<html>
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Frontend</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Paint the Town</title>
-    <meta name="description" content="Paint the Town">
+    
+<meta name="frontend/config/environment" content="%7B%22modulePrefix%22%3A%22frontend%22%2C%22host%22%3A%22http%3A%2F%2Fpaintthetown-api.chriswhong.com%22%2C%22environment%22%3A%22development%22%2C%22rootURL%22%3A%22%2F%22%2C%22locationType%22%3A%22auto%22%2C%22EmberENV%22%3A%7B%22FEATURES%22%3A%7B%7D%2C%22EXTEND_PROTOTYPES%22%3A%7B%22Date%22%3Afalse%7D%7D%2C%22APP%22%3A%7B%22name%22%3A%22frontend%22%2C%22version%22%3A%220.0.0%2Bb2dac4cf%22%7D%2C%22mapbox-gl%22%3A%7B%22accessToken%22%3A%22pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmYTQ2YzBmMTM0ZDAyIn0.owNd_Qa7Sw2neNJbK6zc1A%22%7D%2C%22ember-websockets%22%3A%7B%22socketIO%22%3Atrue%7D%2C%22fontawesome%22%3A%7B%22icons%22%3A%7B%22free-solid-svg-icons%22%3A%22all%22%2C%22free-brands-svg-icons%22%3A%22all%22%7D%7D%2C%22exportApplicationGlobal%22%3Atrue%7D" />
 
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css" rel="stylesheet" />
-    <style>
-      html, body, #mapContainer {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-      }
-    </style>
+    <link integrity="" rel="stylesheet" href="/assets/vendor.css">
+    <link integrity="" rel="stylesheet" href="/assets/frontend.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
+    
   </head>
-
   <body>
-    <div id="mapContainer">
+    
+
+    <script src="/assets/vendor.js"></script>
+    <script src="/assets/frontend.js"></script>
+
+    <!-- Modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">About Paint the Town</h5>
+          </div>
+          <div class="modal-body">
+            <p>Paint the Town is a collaborative data art project.  It allows anyone to "paint" a New York City tax lot to any color they choose.</p>
+
+            <p>Click a tax lot, choose a color, enter your nickname, and submit your contribution!</p>
+
+            <p class="pull-right">by Chris Whong</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">That's Cool</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
-    <script type="text/javascript">
-      // sets up my mapbox access token so they can track my usage of their basemap services
-      mapboxgl.accessToken = 'pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmYTQ2YzBmMTM0ZDAyIn0.owNd_Qa7Sw2neNJbK6zc1A';
-
-      // instantiate the map
-      var map = new mapboxgl.Map({
-        container: 'mapContainer',
-        style: 'mapbox://styles/mapbox/light-v9',
-        center: [-73.951,40.728],
-        zoom: 15,
-      });
-
-      map.on('style.load', () => {
-        map.addSource('pluto', {
-          type: 'vector',
-          tiles: [`${ENV.host}/tiles/{z}/{x}/{y}.mvt`],
-        });
-
-        map.addLayer({
-          id: 'pluto',
-          type: 'line',
-          source: 'pluto',
-          'source-layer': 'pluto',
-          paint: {
-            'line-width': 0.1,
-            'line-opacity': 0.5,
-          }
-        })
-      });
-    </script>
+    
   </body>
 </html>
