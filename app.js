@@ -34,6 +34,10 @@ app.all('*', (req, res, next) => {
   next();
 });
 
+app.use('/nyc', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public/index.html'));
+});
+
 // serve static files
 app.use('/', express.static('public'))
 // parse JSON request bodies
