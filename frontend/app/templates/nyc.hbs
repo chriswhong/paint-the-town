@@ -24,7 +24,12 @@
   as |map|
 }}
   {{#if highlightFeature}}
-    <div id="map-tooltip" style="top: {{tooltipY}}; left:{{tooltipX}};">{{tooltipText}}</div>
+    <div id="map-tooltip" style="top: {{tooltipY}}; left:{{tooltipX}};">
+      {{tooltipText}}
+      {{#if isInvalid}}
+       <br/>{{fa-icon 'exclamation-triangle'}} Enter a Username to paint
+      {{/if}}
+    </div>
   {{/if}}
   {{map.on 'click' (action 'handleMapClick')}}
   {{map.on 'mousemove' (action 'handleMapMousemove')}}
