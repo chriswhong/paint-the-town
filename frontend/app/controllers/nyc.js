@@ -162,6 +162,23 @@ export default Controller.extend({
     return true;
   }),
 
+  postColorChange(bbl, color) {
+    const body = JSON.stringify({
+      bbl,
+      color,
+      username: this.get('username'),
+    });
+
+    fetch(`${ENV.host}/colors`, {
+      method: 'post',
+      headers: {
+        'Content-type': 'application/json',
+        'Content-Length': body.length,
+      },
+      body,
+    });
+  },
+
   actions: {
     mapLoaded(map) {
       this.set('mapInstance', map);
@@ -183,12 +200,18 @@ export default Controller.extend({
         layers: ['pluto-fill', 'temp-features-fill']
       });
 
-      feature.properties.proposedColor = this.get('lastColor');
+      const { bbl } = feature.properties;
+      const color = this.get('activeColor');
 
-      if (feature) {
-        // set selectedFeature
-        this.set('selectedFeature', feature);
-      }
+      // POST a color change to set this BBL's color to activeColor;
+      this.postColorChange(bbl, color)
+
+      // feature.properties.proposedColor = this.get('lastColor');
+      //
+      // if (feature) {
+      //   // set selectedFeature
+      //   this.set('selectedFeature', feature);
+      // }
     },
 
     // on keypress in the username input, set username
