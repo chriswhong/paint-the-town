@@ -32,12 +32,13 @@ router.post('/', async (req, res) => {
       await app.db.none(insertColorQuery, [bbl, color, username]);
 
       // get geometry
-      const { geometry } = await app.db.one(`
+      const { geometry, address, timestamp } = await app.db.one(`
         SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geometry,
         mappluto.bbl,
+        address,
         color,
         username,
-        timestamp
+        to_char(timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS timestamp
         FROM mappluto
         LEFT JOIN (
           SELECT distinct on (bbl) * from colors
@@ -55,8 +56,10 @@ router.post('/', async (req, res) => {
           geometry: JSON.parse(geometry),
           properties: {
             bbl,
+            address,
             color,
             username,
+            timestamp,
           }
         }
       });

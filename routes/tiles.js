@@ -27,7 +27,7 @@ router.get('/:z/:x/:y.mvt', async (req, res) => {
         address,
         geom,
         username,
-        timestamp,
+        to_char(timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS timestamp,
         CASE WHEN color IS NOT NULL THEN color ELSE '#FFF' END AS color
   	  FROM (
   		 SELECT
