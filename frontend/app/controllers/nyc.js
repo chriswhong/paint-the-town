@@ -21,6 +21,21 @@ export default Controller.extend({
     const username = window.localStorage.getItem('username');
     this.set('username', username || '');
 
+    // read the colorPalette from localStorage
+    const colorPalette = JSON.parse(window.localStorage.getItem('colorPalette'));
+    if (colorPalette) {
+      this.set('colorPalette0', colorPalette[0]);
+      this.set('colorPalette1', colorPalette[1]);
+      this.set('colorPalette2', colorPalette[2]);
+      this.set('colorPalette3', colorPalette[3]);
+      this.set('colorPalette4', colorPalette[4]);
+      this.set('colorPalette5', colorPalette[5]);
+      this.set('colorPalette6', colorPalette[6]);
+    }
+
+
+    // set first color to active
+    this.set('activeColor', this.get('colorPalette0'));
   },
 
   tooltipX: 0,
@@ -43,14 +58,6 @@ export default Controller.extend({
   colorPalette4: '#4176F2',
   colorPalette5: '#713DDF',
   colorPalette6: '#A83CBD',
-
-  activeColor: '#F44842',
-
-  // if the user has already painted a lot, remember the color
-  // and use it as the default in the color picker on the next paint operation
-  // lastColor: "#FFF",
-  lastColor: "#292972",
-
 
   // persists username as long as this controller is around
   username: '',
@@ -117,6 +124,20 @@ export default Controller.extend({
     }
   },
 
+  tempFeaturesLineLayer: {
+    id: 'temp-features-line',
+    type: 'line',
+    paint: {
+      'line-width': 0.1,
+      'line-opacity': {
+        stops: [
+          [14, 0],
+          [15, 0.5],
+        ]
+      },
+    }
+  },
+
   // selectedFeature is the one currently being painted, and needs a computed
   // so we can update its color constantly as the user interacts with the color picker
   selectedFeatureSource: Ember.computed('selectedFeature', 'selectedFeature.properties.proposedColor', function() {
@@ -176,18 +197,13 @@ export default Controller.extend({
     }
   },
 
-  // validates that the user has chosen a color and provided a sufficiently long username
-  isValid: Ember.computed('selectedFeature.properties.proposedColor', 'username', function() {
+  // validates that the user has provided a sufficiently long username
+  isInvalid: Ember.computed('username', function() {
     // username must be > 3 characters
     const username = this.get('username');
-    if (username.length < 4) return false;
+    if (username.length < 4) return true;
 
-    // proposedColor must be different than color
-    const selectedFeature = this.get('selectedFeature');
-    const { color, proposedColor } = selectedFeature.properties;
-    if (!proposedColor || (color === proposedColor)) return false;
-
-    return true;
+    return false;
   }),
 
   postColorChange(bbl, color) {
@@ -223,6 +239,8 @@ export default Controller.extend({
 
     // if the user clicked a lot, set selectedFeature to its feature
     handleMapClick(e) {
+      if (this.get('isInvalid')) return null;
+
       const { mapInstance: map } = this;
       const [feature] = map.queryRenderedFeatures(e.point, {
         layers: ['pluto-fill', 'temp-features-fill']
@@ -235,13 +253,6 @@ export default Controller.extend({
         // POST a color change to set this BBL's color to activeColor;
         this.postColorChange(bbl, color)
       }
-
-      // feature.properties.proposedColor = this.get('lastColor');
-      //
-      // if (feature) {
-      //   // set selectedFeature
-      //   this.set('selectedFeature', feature);
-      // }
     },
 
     handleMapMousemove(e) {
@@ -276,46 +287,25 @@ export default Controller.extend({
     // on keypress in the username input, set username
     updateUsername(e) {
       this.set('username', e.target.value);
+      window.localStorage.setItem('username', this.get('username'))
     },
-
-    // // store the proposed color in selectedFeature.properties
-    // handleColorChange(hsva) {
-    //   const color = hsva.toHEXA().toString();
-    //   this.set('selectedFeature.properties.proposedColor', color);
-    // },
-
-    // // POSTs data to the server
-    // handlePaint() {
-    //   const selectedFeature = this.get('selectedFeature');
-    //   const { bbl, proposedColor:color } = selectedFeature.properties;
-    //
-    //   const body = JSON.stringify({
-    //     bbl,
-    //     color,
-    //     username: this.get('username'),
-    //   });
-    //
-    //   // remember the color for next time
-    //   this.set('lastColor', color);
-    //
-    //   // remember username
-    //   window.localStorage.setItem('username', this.get('username'));
-    //
-    //   fetch(`${ENV.host}/colors`, {
-    //     method: 'post',
-    //     headers: {
-    //       'Content-type': 'application/json',
-    //       'Content-Length': body.length,
-    //     },
-    //     body,
-    //   });
-    //
-    //   // clear selectedFeature
-    //   this.set('selectedFeature', undefined);
-    // },
 
     setActiveColor(color) {
       this.set('activeColor', color);
     },
+
+    handleNewColor(color) {
+      this.set('activeColor', color);
+      // store the colorpalette in localstorage
+      window.localStorage.setItem('colorPalette', JSON.stringify([
+        this.get('colorPalette0'),
+        this.get('colorPalette1'),
+        this.get('colorPalette2'),
+        this.get('colorPalette3'),
+        this.get('colorPalette4'),
+        this.get('colorPalette5'),
+        this.get('colorPalette6'),
+      ]))
+    }
   }
 });

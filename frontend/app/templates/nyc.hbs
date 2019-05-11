@@ -1,54 +1,21 @@
 <div id="sidebar">
   <h4>Username</h4>
   <div class="form-group ">
-    {{input type="text" class="form-control" value=username keyPress=(action "updateUsername") size="15" placeholder="Enter a Nickname"}}
+    {{input type="text" class=(if isInvalid 'form-control is-invalid' 'form-control') value=username keyUp=(action "updateUsername") size="15" placeholder="Enter a Username to paint"}}
   </div>
 
   <hr/>
 
   <h4>Colors</h4>
   <p>Select a color. Click the selected color again to pick custom colors</p>
-  {{color-palette-item value=colorPalette0 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
-  {{color-palette-item value=colorPalette1 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
-  {{color-palette-item value=colorPalette2 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
-  {{color-palette-item value=colorPalette3 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
-  {{color-palette-item value=colorPalette4 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
-  {{color-palette-item value=colorPalette5 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
-  {{color-palette-item value=colorPalette6 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
+  {{color-palette-item value=colorPalette0 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
+  {{color-palette-item value=colorPalette1 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
+  {{color-palette-item value=colorPalette2 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
+  {{color-palette-item value=colorPalette3 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
+  {{color-palette-item value=colorPalette4 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
+  {{color-palette-item value=colorPalette5 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
+  {{color-palette-item value=colorPalette6 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
 </div>
-
-<!-- {{#if selectedFeature}}
-  <div id="color-picker-container">
-    <h3>{{selectedFeature.properties.address}}</h3>
-    {{#if selectedFeature.properties.username}}
-      <p>{{selectedFeature.properties.username}} painted this lot {{selectedFeature.properties.color}} on {{selectedFeature.properties.timestamp}}</p>
-    {{else}}
-      <p>Be the first to paint this lot!</p>
-    {{/if}}
-    {{color-picker
-      format="hex"
-      default=lastColor
-      showAlways=true
-      onChange=(action "handleColorChange")
-      components=(hash
-        opacity=false
-        interaction=(hash hex=false rgba=false hsva=false save=false clear=false)
-      )
-    }}
-    <div id="controls" class="row">
-      <div class="col-md-6">
-        <div class="form-group ">
-          {{input type="text" class="form-control" value=username keyPress=(action "updateUsername") size="15" placeholder="Enter a Nickname"}}
-        </div>
-      </div>
-      <div class="col-md-6">
-        <button type="button" class="btn btn-success" {{action "handlePaint"}} disabled={{not isValid}}>Paint!</button>
-        <button type="button" class="btn btn-secondary" {{action "handleCancel"}}>Cancel</button>
-      </div>
-    </div>
-  </div>
-{{/if}} -->
-
 
 {{#mapbox-gl
   class='map-container'
@@ -93,6 +60,7 @@
     as |source|
   }}
     {{source.layer layer=tempFeaturesFillLayer before='tunnel-street-low'}}
+    {{source.layer layer=tempFeaturesLineLayer before='tunnel-street-low'}}
   {{/map.source}}
 {{/mapbox-gl}}
 
