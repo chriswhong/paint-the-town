@@ -49,12 +49,16 @@
   </div>
 {{/if}} -->
 
+
 {{#mapbox-gl
   class='map-container'
   initOptions=mapInit
   mapLoaded=(action 'mapLoaded')
   as |map|
 }}
+  {{#if highlightFeature}}
+    <div id="map-tooltip" style="top: {{tooltipY}}; left:{{tooltipX}};">{{tooltipText}}</div>
+  {{/if}}
   {{map.on 'click' (action 'handleMapClick')}}
   {{map.on 'mousemove' (action 'handleMapMousemove')}}
 

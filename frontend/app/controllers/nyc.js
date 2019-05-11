@@ -2,6 +2,8 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import MapboxGL from 'mapbox-gl/dist/mapbox-gl.js'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
+import moment from 'moment';
+
 import baseStyle from '../styles/base-style';
 import ENV from 'frontend/config/environment';
 
@@ -20,6 +22,10 @@ export default Controller.extend({
     this.set('username', username || '');
 
   },
+
+  tooltipX: 0,
+  tooltipY: 0,
+  tooltipText: '',
 
   // initialization options for the mapboxGL map
   mapInit: {
@@ -247,10 +253,24 @@ export default Controller.extend({
       if (feature) {
         map.getCanvas().style.cursor = 'pointer';
         this.set('highlightFeature', feature);
+
+        // tooltip text
+        const { address, color, username, timestamp } = feature.properties;
+        let tooltipText = `${address} has not been painted yet`
+
+        if (timestamp) {
+          tooltipText = `${address} was painted by ${username} ${moment(timestamp).fromNow()}`;
+        }
+
+        this.set('tooltipText', tooltipText)
       } else {
         map.getCanvas().style.cursor = 'default';
         this.set('highlightFeature', null);
       }
+
+      // popup
+      this.set('tooltipX', `${e.point.x + 15}px`);
+      this.set('tooltipY', `${e.point.y + 15}px`);
     },
 
     // on keypress in the username input, set username
@@ -296,7 +316,6 @@ export default Controller.extend({
 
     setActiveColor(color) {
       this.set('activeColor', color);
-      console.log(this.get('activeColor'))
     },
   }
 });

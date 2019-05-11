@@ -109,3 +109,10 @@ button:focus {
   position: absolute;
   top: 0;
 }
+
+#map-tooltip {
+  position: absolute;
+  background: #cdcdcd;
+  padding: 4px;
+  opacity: 0.75;
+}
