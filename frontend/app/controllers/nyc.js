@@ -35,6 +35,8 @@ export default Controller.extend({
   colorPalette2: '#F4F441',
   colorPalette3: '#55F441',
   colorPalette4: '#4176F2',
+  colorPalette5: '#713DDF',
+  colorPalette6: '#A83CBD',
 
   activeColor: '#F44842',
 
@@ -140,6 +142,26 @@ export default Controller.extend({
     }
   },
 
+  highlightFeature: null,
+
+  highlightFeatureSource: Ember.computed('highlightFeature', function() {
+    const data = this.get('highlightFeature');
+    return {
+      type: 'geojson',
+      data,
+    };
+  }),
+
+  highlightFeatureLineLayer: {
+    id: 'highlight-feature-line',
+    type: 'line',
+    paint: {
+      'line-width': 2,
+      'line-opacity': 1,
+      'line-color': '#82A7FD',
+    }
+  },
+
   // when a socket.io message is received, push the feature to tempFeatures
   // this will trigger a computed mapboxGL source and update the map
   onMessage({ type, feature }) {
@@ -194,17 +216,19 @@ export default Controller.extend({
     },
 
     // if the user clicked a lot, set selectedFeature to its feature
-    mapClicked(e) {
+    handleMapClick(e) {
       const { mapInstance: map } = this;
       const [feature] = map.queryRenderedFeatures(e.point, {
         layers: ['pluto-fill', 'temp-features-fill']
       });
 
-      const { bbl } = feature.properties;
-      const color = this.get('activeColor');
+      if (feature) {
+        const { bbl } = feature.properties;
+        const color = this.get('activeColor');
 
-      // POST a color change to set this BBL's color to activeColor;
-      this.postColorChange(bbl, color)
+        // POST a color change to set this BBL's color to activeColor;
+        this.postColorChange(bbl, color)
+      }
 
       // feature.properties.proposedColor = this.get('lastColor');
       //
@@ -214,61 +238,65 @@ export default Controller.extend({
       // }
     },
 
+    handleMapMousemove(e) {
+      const { mapInstance: map } = this;
+      const [feature] = map.queryRenderedFeatures(e.point, {
+        layers: ['pluto-fill', 'temp-features-fill']
+      });
+
+      if (feature) {
+        map.getCanvas().style.cursor = 'pointer';
+        this.set('highlightFeature', feature);
+      } else {
+        map.getCanvas().style.cursor = 'default';
+        this.set('highlightFeature', null);
+      }
+    },
+
     // on keypress in the username input, set username
     updateUsername(e) {
       this.set('username', e.target.value);
     },
 
-    // store the proposed color in selectedFeature.properties
-    handleColorChange(hsva) {
-      const color = hsva.toHEXA().toString();
-      this.set('selectedFeature.properties.proposedColor', color);
-    },
+    // // store the proposed color in selectedFeature.properties
+    // handleColorChange(hsva) {
+    //   const color = hsva.toHEXA().toString();
+    //   this.set('selectedFeature.properties.proposedColor', color);
+    // },
 
-    // POSTs data to the server
-    handlePaint() {
-      const selectedFeature = this.get('selectedFeature');
-      const { bbl, proposedColor:color } = selectedFeature.properties;
-
-      const body = JSON.stringify({
-        bbl,
-        color,
-        username: this.get('username'),
-      });
-
-      // remember the color for next time
-      this.set('lastColor', color);
-
-      // remember username
-      window.localStorage.setItem('username', this.get('username'));
-
-      fetch(`${ENV.host}/colors`, {
-        method: 'post',
-        headers: {
-          'Content-type': 'application/json',
-          'Content-Length': body.length,
-        },
-        body,
-      });
-
-      // clear selectedFeature
-      this.set('selectedFeature', undefined);
-    },
-
-    // cancel a paint
-    handleCancel() {
-      this.set('selectedFeature', undefined);
-    },
+    // // POSTs data to the server
+    // handlePaint() {
+    //   const selectedFeature = this.get('selectedFeature');
+    //   const { bbl, proposedColor:color } = selectedFeature.properties;
+    //
+    //   const body = JSON.stringify({
+    //     bbl,
+    //     color,
+    //     username: this.get('username'),
+    //   });
+    //
+    //   // remember the color for next time
+    //   this.set('lastColor', color);
+    //
+    //   // remember username
+    //   window.localStorage.setItem('username', this.get('username'));
+    //
+    //   fetch(`${ENV.host}/colors`, {
+    //     method: 'post',
+    //     headers: {
+    //       'Content-type': 'application/json',
+    //       'Content-Length': body.length,
+    //     },
+    //     body,
+    //   });
+    //
+    //   // clear selectedFeature
+    //   this.set('selectedFeature', undefined);
+    // },
 
     setActiveColor(color) {
       this.set('activeColor', color);
       console.log(this.get('activeColor'))
     },
-
-    handlePaletteColorUpdate(i, hsva) {
-      // const color = hsva.toHEXA().toString();
-      // this.set('activeColor', color);
-      // this.get('colorPalette').replace(i, 1, [color]);
-    }
   }
 });

@@ -1,25 +1,23 @@
 <div id="sidebar">
-  <h4>Color Palette</h4>
-  <p>Select a color, then click a lot on the map</p>
+  <h4>Username</h4>
+  <div class="form-group ">
+    {{input type="text" class="form-control" value=username keyPress=(action "updateUsername") size="15" placeholder="Enter a Nickname"}}
+  </div>
+
+  <hr/>
+
+  <h4>Colors</h4>
+  <p>Select a color. Click the selected color again to pick custom colors</p>
   {{color-palette-item value=colorPalette0 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
   {{color-palette-item value=colorPalette1 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
   {{color-palette-item value=colorPalette2 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
   {{color-palette-item value=colorPalette3 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
   {{color-palette-item value=colorPalette4 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
-
-    <!-- {{color-picker
-      format="hex"
-      default=lastColor
-      showAlways=false
-      onChange=(action "handleColorChange")
-      components=(hash
-        opacity=false
-        interaction=(hash hex=false rgba=false hsva=false clear=false)
-      )
-    }} -->
+  {{color-palette-item value=colorPalette5 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
+  {{color-palette-item value=colorPalette6 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "setActiveColor")}}
 </div>
 
-{{#if selectedFeature}}
+<!-- {{#if selectedFeature}}
   <div id="color-picker-container">
     <h3>{{selectedFeature.properties.address}}</h3>
     {{#if selectedFeature.properties.username}}
@@ -49,7 +47,7 @@
       </div>
     </div>
   </div>
-{{/if}}
+{{/if}} -->
 
 {{#mapbox-gl
   class='map-container'
@@ -57,7 +55,8 @@
   mapLoaded=(action 'mapLoaded')
   as |map|
 }}
-  {{map.on 'click' (action 'mapClicked')}}
+  {{map.on 'click' (action 'handleMapClick')}}
+  {{map.on 'mousemove' (action 'handleMapMousemove')}}
 
   {{#map.source
     options=plutoSource
@@ -73,6 +72,15 @@
     }}
       {{source.layer layer=selectedFeatureFillLayer before='tunnel-street-low'}}
       {{source.layer layer=selectedFeatureLineLayer before='tunnel-street-low'}}
+    {{/map.source}}
+  {{/if}}
+
+  {{#if highlightFeature}}
+    {{#map.source
+      options=highlightFeatureSource
+      as |source|
+    }}
+      {{source.layer layer=highlightFeatureLineLayer before='tunnel-street-low'}}
     {{/map.source}}
   {{/if}}
 
