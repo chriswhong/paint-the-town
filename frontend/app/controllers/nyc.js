@@ -30,9 +30,19 @@ export default Controller.extend({
     minZoom: 13.5,
   },
 
+  colorPalette0: '#F44842',
+  colorPalette1: '#F48C41',
+  colorPalette2: '#F4F441',
+  colorPalette3: '#55F441',
+  colorPalette4: '#4176F2',
+
+  activeColor: '#F44842',
+
   // if the user has already painted a lot, remember the color
   // and use it as the default in the color picker on the next paint operation
-  lastColor: "#FFF",
+  // lastColor: "#FFF",
+  lastColor: "#292972",
+
 
   // persists username as long as this controller is around
   username: '',
@@ -174,7 +184,6 @@ export default Controller.extend({
       });
 
       feature.properties.proposedColor = this.get('lastColor');
-      console.log(feature);
 
       if (feature) {
         // set selectedFeature
@@ -226,6 +235,17 @@ export default Controller.extend({
     // cancel a paint
     handleCancel() {
       this.set('selectedFeature', undefined);
+    },
+
+    setActiveColor(color) {
+      this.set('activeColor', color);
+      console.log(this.get('activeColor'))
+    },
+
+    handlePaletteColorUpdate(i, hsva) {
+      // const color = hsva.toHEXA().toString();
+      // this.set('activeColor', color);
+      // this.get('colorPalette').replace(i, 1, [color]);
     }
   }
 });

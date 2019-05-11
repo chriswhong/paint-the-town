@@ -19,19 +19,19 @@ body > .ember-view {
   background-color: #ffffff;
   border-bottom: 3px solid #b3bfbf;
 }
-
+/*
 button.pcr-button {
   opacity:0.01;
-}
+} */
 
-.pcr-app {
+/* .pcr-app {
   top: auto !important;
   left: 35px !important;
   bottom: 90px;
   opacity: 1;
   visibility: visible;
   box-shadow: none;
-}
+} */
 
 #color-picker-container {
   display: block;
@@ -73,4 +73,39 @@ button.pcr-button {
   margin-right: 10px;
   position: relative;
   top: -2px;
+}
+
+#sidebar {
+  position: absolute;
+  z-index: 1;
+  background: #FFF;
+  padding: 15px;
+  border: 1px solid #cdcdcd;
+  top: 86px;
+  left: 15px;
+  width: 340px;
+}
+
+.color-palette-item {
+  position: relative;
+  display: inline-block;
+}
+
+/* nix bootstrap button halo */
+button:focus {
+    outline: 0;
+}
+
+/* override ember-pickr halo on focus */
+.pcr-app button:focus, .pcr-app input:focus, .pickr button:focus, .pickr input:focus {
+  box-shadow: none;
+}
+
+.picker-container.active {
+  box-shadow: 0 0 0 1px #f1f3f4,0 0 0 3px currentColor;
+}
+
+.pickr.overlay {
+  position: absolute;
+  top: 0;
 }

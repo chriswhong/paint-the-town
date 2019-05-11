@@ -1,0 +1,17 @@
+<div class="picker-container {{if (eq activeColor value) "active"}}">
+  {{color-picker
+    value=value
+    format="hex"
+    showAlways=false
+    components=(hash
+      opacity=false
+      interaction=(hash hex=false rgba=false hsva=false clear=false)
+    )
+    onSave=(action "handleSave")
+  }}
+  {{#if (not-eq activeColor value)}}
+    <div class="pickr overlay" {{action "handleClick" value}}>
+      <button type="button" class="pcr-button" style="color: {{value}};"></button>
+    </div>
+  {{/if}}
+</div>
