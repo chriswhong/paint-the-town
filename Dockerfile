@@ -10,6 +10,6 @@ COPY . .
 
 RUN yarn install
 
-RUN cd frontend && yarn install && ember build --output-path=../public
+RUN cd frontend && yarn install && ember build --environment=production --output-path=../public
 
 CMD [ "npm", "start" ]
