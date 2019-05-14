@@ -15,6 +15,13 @@
   {{color-palette-item value=colorPalette4 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
   {{color-palette-item value=colorPalette5 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
   {{color-palette-item value=colorPalette6 activeColor=activeColor onClick=(action "setActiveColor") onSave=(action "handleNewColor")}}
+
+  <hr/>
+
+  <h4>Stats</h4>
+  {{#each model as |borocount|}}
+    <div class="borocount-boroname"><strong>{{borocount.boroname}}</strong></div> {{numeral-format borocount.paintedlots "0.0a"}}/{{numeral-format borocount.totallots "0.0a"}} ({{numeral-format borocount.percentage "0.0%"}})<br/>
+  {{/each}}
 </div>
 
 {{#mapbox-gl

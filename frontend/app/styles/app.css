@@ -116,3 +116,9 @@ button:focus {
   padding: 4px;
   opacity: 0.75;
 }
+
+.borocount-boroname {
+  width: 112px;
+  display: inline-block;
+  text-align: right;
+}
