@@ -43,8 +43,9 @@ app.use('/', express.static('public'))
 // parse JSON request bodies
 app.use(bodyParser.json());
 
-app.use('/tiles', require('./routes/tiles'))
-app.use('/colors', require('./routes/colors'))
+app.use('/tiles', require('./routes/tiles'));
+app.use('/colors', require('./routes/colors'));
+app.use('/borocounts', require('./routes/borocounts'));
 
 
 module.exports = {app: app, server: server};
