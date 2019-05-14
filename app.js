@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const compression = require('compression');
 const bodyParser = require('body-parser');
 
 // use .env for local environment variables
@@ -8,6 +9,9 @@ require('dotenv').config();
 // instantiate express app
 const app = express();
 var server = require('http').Server(app);
+
+// compress all responses
+app.use(compression());
 
 // set up socket.io, which will listen on the same port as the express server
 app.io = require('socket.io')(server);
