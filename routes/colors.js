@@ -1,11 +1,23 @@
 const express = require('express');
 const router = express.Router();
 
-const validateInputs = (bbl, color, username) => {
-  // validate bbl
-  const bblRegex = /^[1-5]{1}[0-9]{5}[0-9]{4}$/;
-  const bblMatch = bbl.match(bblRegex);
-  if (!bblMatch) return false;
+const validateInputs = (city, id, color, username) => {
+
+  if (city === 'nyc') {
+    // validate bbl
+    const bblRegex = /^[1-5]{1}[0-9]{5}[0-9]{4}$/;
+    const bblMatch = id.match(bblRegex);
+    if (!bblMatch) return false;
+  }
+
+  if (city === 'boston') {
+    // validate bbl
+    const idRegex = /^[0-9]{2}[0-9]{5}[0-9]{3}$/;
+    const idMatch = id.match(idRegex);
+    if (!idMatch) return false;
+  }
+
+
 
   // validate color
   const colorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
@@ -24,12 +36,13 @@ const insertColorQuery = `INSERT INTO $4:name(parcel_id, color, username, timest
 /* Save a parcel id, color, username, and timestamp to the database */
 router.post('/:city', async (req, res) => {
   const { app, params } = req;
+  const { city } = params;
   const { id, color, username } = req.body;
+  console.log(id, color, username)
 
-  if (validateInputs(id, color, username)) {
+  if (validateInputs(city, id, color, username)) {
     // write to database
     try {
-      const { city } = params;
       const parcelsTable = `${city}_parcels`;
       const colorsTable = `${city}_colors`;
 

@@ -7,6 +7,9 @@
 
 shp2pgsql -s 2263:3857 MapPLUTO public.mappluto | psql -h localhost -d postgres -U postgres
 
+## Load boston parcels
+shp2pgsql -s 4326:3857 output public.boston_parcels | psql -h localhost -d postgres -U postgres
+
 ## Add gist index to geoms
 
 CREATE INDEX mappluto_geom_idx
