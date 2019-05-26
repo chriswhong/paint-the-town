@@ -18,35 +18,39 @@ const validateInputs = (bbl, color, username) => {
   return true;
 };
 
-const insertColorQuery = `INSERT INTO colors(bbl, color, username, timestamp) VALUES($1, $2, $3, NOW())`
+const insertColorQuery = `INSERT INTO $4:name(parcel_id, color, username, timestamp) VALUES($1, $2, $3, NOW())`
 
 /* POST /colors */
-/* Save a bbl, color, username, and timestamp to the database */
-router.post('/', async (req, res) => {
-  const { app } = req;
-  const { bbl, color, username } = req.body;
+/* Save a parcel id, color, username, and timestamp to the database */
+router.post('/:city', async (req, res) => {
+  const { app, params } = req;
+  const { id, color, username } = req.body;
 
-  if (validateInputs(bbl, color, username)) {
+  if (validateInputs(id, color, username)) {
     // write to database
     try {
-      await app.db.none(insertColorQuery, [bbl, color, username]);
+      const { city } = params;
+      const parcelsTable = `${city}_parcels`;
+      const colorsTable = `${city}_colors`;
+
+      await app.db.none(insertColorQuery, [id, color, username, colorsTable]);
 
       // get geometry
       const { geometry, address, timestamp } = await app.db.one(`
         SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geometry,
-        mappluto.bbl,
+        $1:name.id,
         address,
         color,
         username,
         to_char(timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS timestamp
-        FROM mappluto
+        FROM $1:name
         LEFT JOIN (
-          SELECT distinct on (bbl) * from colors
-          ORDER BY bbl, timestamp DESC
+          SELECT DISTINCT on (parcel_id) * FROM $2:name
+          ORDER BY parcel_id, timestamp DESC
         ) uniquecolors
-        ON mappluto.bbl = uniquecolors.bbl
-        WHERE mappluto.bbl = $1
-      `, bbl);
+        ON $1:name.id = uniquecolors.parcel_id
+        WHERE $1:name.id = $3
+      `, [ parcelsTable, colorsTable, id ]);
 
       // broadcast the new feature to connected clients via socket.io
       app.io.send({
@@ -55,7 +59,7 @@ router.post('/', async (req, res) => {
           type: 'Feature',
           geometry: JSON.parse(geometry),
           properties: {
-            bbl,
+            id,
             address,
             color,
             username,
@@ -66,7 +70,7 @@ router.post('/', async (req, res) => {
 
       res.send({
         status: 'success',
-        message: `bbl ${bbl} was set to ${color}`
+        message: `id ${id} was set to ${color}`
       });
     } catch (e) {
       res.status(400).send({

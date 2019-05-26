@@ -36,6 +36,8 @@ export default Controller.extend({
 
     // set first color to active
     this.set('activeColor', this.get('colorPalette0'));
+
+    console.log(this.get('model'))
   },
 
   tooltipX: 0,
@@ -43,13 +45,7 @@ export default Controller.extend({
   tooltipText: '',
 
   // initialization options for the mapboxGL map
-  mapInit: {
-    style: baseStyle,
-    center: [-73.955178, 40.733433],
-    zoom: 15.23,
-    hash: true,
-    minZoom: 13.5,
-  },
+  baseStyle,
 
   colorPalette0: '#F44842',
   colorPalette1: '#F48C41',
@@ -67,15 +63,19 @@ export default Controller.extend({
   tempFeatures: [],
 
   // primary vector tile source for tax lots with color, bbl, address, username, and timestamp
-  plutoSource: {
-    type: 'vector',
-    tiles: [`${ENV.host}/tiles/{z}/{x}/{y}.mvt`],
-  },
+  // source for temporary features received via socket.io messages
+  parcelsSource: Ember.computed('model.city', function() {
+    const city = this.get('model.city');
+    return {
+      type: 'vector',
+      tiles: [`${ENV.host}/tiles/${city}/{z}/{x}/{y}.mvt`],
+    }
+  }),
 
-  plutoLineLayer: {
-    id: 'pluto-line',
+  parcelsLineLayer: {
+    id: 'parcels-line',
     type: 'line',
-    'source-layer': 'pluto',
+    'source-layer': 'parcels',
     paint: {
       'line-width': 0.1,
       'line-opacity': {
@@ -87,10 +87,10 @@ export default Controller.extend({
     }
   },
 
-  plutoFillLayer: {
+  parcelsFillLayer: {
     id: 'pluto-fill',
     type: 'fill',
-    'source-layer': 'pluto',
+    'source-layer': 'parcels',
     paint: {
       'fill-opacity': 1,
       'fill-color': {
@@ -206,14 +206,14 @@ export default Controller.extend({
     return false;
   }),
 
-  postColorChange(bbl, color) {
+  postColorChange(id, color) {
     const body = JSON.stringify({
-      bbl,
+      id,
       color,
       username: this.get('username'),
     });
 
-    fetch(`${ENV.host}/colors`, {
+    fetch(`${ENV.host}/colors/${this.get('model.city')}`, {
       method: 'post',
       headers: {
         'Content-type': 'application/json',
@@ -247,11 +247,11 @@ export default Controller.extend({
       });
 
       if (feature) {
-        const { bbl } = feature.properties;
+        const { id } = feature.properties;
         const color = this.get('activeColor');
 
         // POST a color change to set this BBL's color to activeColor;
-        this.postColorChange(bbl, color)
+        this.postColorChange(id, color)
       }
     },
 

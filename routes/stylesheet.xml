@@ -1,0 +1,22 @@
+<Map background-color="orange" >
+  <Style name="mappluto">
+    <Rule>
+      <PolygonSymbolizer fill="green"/>
+    </Rule>
+  </Style>
+
+  <Layer name="mappluto">
+    <StyleName>mappluto</StyleName>
+    <Datasource>
+      <Parameter name="table">
+        mappluto
+      </Parameter>
+      <Parameter name="type">postgis</Parameter>
+      <Parameter name="host">chriswhong.com</Parameter>
+      <Parameter name="password">yKgTz3yB</Parameter>
+      <Parameter name="port">5432</Parameter>
+      <Parameter name="user">postgres</Parameter>
+      <Parameter name="dbname">postgres</Parameter>
+    </Datasource>
+  </Layer>
+</Map>

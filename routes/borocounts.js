@@ -24,12 +24,12 @@ router.get('/', async (req, res) => {
     SELECT
       borocode,
       color
-    FROM mappluto
+    FROM nyc_parcels
     LEFT JOIN (
-      SELECT distinct on (bbl) * from colors
-      ORDER BY bbl, timestamp DESC
+      SELECT distinct on (parcel_id) * from nyc_colors
+      ORDER BY parcel_id, timestamp DESC
     ) uniquecolors
-    ON mappluto.bbl = uniquecolors.bbl
+    ON nyc_parcels.id = uniquecolors.parcel_id
   ) joinedlots
   GROUP BY borocode
   `

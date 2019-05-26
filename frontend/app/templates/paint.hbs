@@ -26,7 +26,13 @@
 
 {{#mapbox-gl
   class='map-container'
-  initOptions=mapInit
+  initOptions=(hash
+    style=baseStyle
+    center=model.mapCenter
+    zoom=model.mapZoom
+    hash=true
+    minZoom=12
+  )
   mapLoaded=(action 'mapLoaded')
   as |map|
 }}
@@ -42,11 +48,11 @@
   {{map.on 'mousemove' (action 'handleMapMousemove')}}
 
   {{#map.source
-    options=plutoSource
+    options=parcelsSource
     as |source|
   }}
-    {{source.layer layer=plutoFillLayer before='tunnel-street-low'}}
-    {{source.layer layer=plutoLineLayer before='tunnel-street-low'}}
+    {{source.layer layer=parcelsFillLayer before='tunnel-street-low'}}
+    {{source.layer layer=parcelsLineLayer before='tunnel-street-low'}}
   {{/map.source}}
   {{#if selectedFeature}}
     {{#map.source

@@ -6,10 +6,11 @@ const mercator = new SphericalMercator();
 
 /* GET /tiles/:z/:x/:y.mvt */
 /* Retreive a vector tile */
-router.get('/:z/:x/:y.mvt', async (req, res) => {
+router.get('/:city/:z/:x/:y.mvt', async (req, res) => {
   const { app, params } = req;
 
   const {
+    city,
     z,
     x,
     y,
@@ -18,12 +19,17 @@ router.get('/:z/:x/:y.mvt', async (req, res) => {
   // calculate the bounding box for this tile
   const bbox = mercator.bbox(x, y, z, false, '900913');
 
+  const parcelsTable = `${city}_parcels`;
+  const colorsTable = `${city}_colors`;
+
+  console.log([...bbox, parcelsTable, colorsTable])
+
   const vectorTileQuery = `
     WITH tilebounds (geom) AS (SELECT ST_MakeEnvelope($1, $2, $3, $4, 3857))
-    SELECT ST_AsMVT(q, 'pluto', 4096, 'geom')
+    SELECT ST_AsMVT(q, 'parcels', 4096, 'geom')
     FROM (
       SELECT
-        a.bbl,
+        a.id,
         address,
         geom,
         username,
@@ -31,28 +37,28 @@ router.get('/:z/:x/:y.mvt', async (req, res) => {
         CASE WHEN color IS NOT NULL THEN color ELSE '#FFF' END AS color
   	  FROM (
   		 SELECT
-  			mappluto.bbl,
+  			$5:name.id,
   			address,
   			ST_AsMVTGeom(
-  			  mappluto.geom,
+  			  $5:name.geom,
   			  tileBounds.geom,
   			  4096,
   			  256,
   			  false
   			) geom
-  		  FROM mappluto, tilebounds
-  		  WHERE mappluto.geom && tilebounds.geom
+  		  FROM $5:name, tilebounds
+  		  WHERE $5:name.geom && tilebounds.geom
   	   ) a
        LEFT JOIN (
-         SELECT distinct on (bbl) * from colors
-         ORDER BY bbl, timestamp DESC
+         SELECT distinct on (parcel_id) * from $6:name
+         ORDER BY parcel_id, timestamp DESC
        ) uniquecolors
-       ON a.bbl = uniquecolors.bbl
+       ON a.id = uniquecolors.parcel_id
     ) q
   `;
 
   try {
-    const tile = await app.db.one(vectorTileQuery, bbox);
+    const tile = await app.db.one(vectorTileQuery, [...bbox, parcelsTable, colorsTable]);
 
     res.setHeader('Content-Type', 'application/x-protobuf');
 

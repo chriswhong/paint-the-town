@@ -7,7 +7,7 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('nyc');
+  this.route('paint', { path: '/:city' });
 });
 
 export default Router;
