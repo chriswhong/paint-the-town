@@ -88,7 +88,7 @@ export default Controller.extend({
   },
 
   parcelsFillLayer: {
-    id: 'pluto-fill',
+    id: 'parcels-fill',
     type: 'fill',
     'source-layer': 'parcels',
     paint: {
@@ -243,7 +243,7 @@ export default Controller.extend({
 
       const { mapInstance: map } = this;
       const [feature] = map.queryRenderedFeatures(e.point, {
-        layers: ['pluto-fill', 'temp-features-fill']
+        layers: ['parcels-fill', 'temp-features-fill']
       });
 
       if (feature) {
@@ -258,7 +258,7 @@ export default Controller.extend({
     handleMapMousemove(e) {
       const { mapInstance: map } = this;
       const [feature] = map.queryRenderedFeatures(e.point, {
-        layers: ['pluto-fill', 'temp-features-fill']
+        layers: ['parcels-fill', 'temp-features-fill']
       });
 
       if (feature) {
