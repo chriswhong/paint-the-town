@@ -38,10 +38,6 @@ app.all('*', (req, res, next) => {
   next();
 });
 
-app.use('/nyc', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'public/index.html'));
-});
-
 // serve static files
 app.use('/', express.static('public'))
 // parse JSON request bodies
@@ -50,6 +46,10 @@ app.use(bodyParser.json());
 app.use('/tiles', require('./routes/tiles'));
 app.use('/colors', require('./routes/colors'));
 app.use('/borocounts', require('./routes/borocounts'));
+
+app.use('/:city', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public/index.html'));
+});
 
 
 module.exports = {app: app, server: server};
