@@ -20,7 +20,7 @@
   <hr/>
 
   <h4>Stats</h4>
-  {{#each model as |borocount|}}
+  {{#each model.meta as |borocount|}}
     <div class="borocount-boroname"><strong>{{borocount.boroname}}</strong></div> {{numeral-format borocount.paintedlots "0.0a"}}/{{numeral-format borocount.totallots "0.0a"}} ({{numeral-format borocount.percentage "0.0%"}})<br/>
   {{/each}}
 </div>

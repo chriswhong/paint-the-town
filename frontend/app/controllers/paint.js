@@ -36,8 +36,6 @@ export default Controller.extend({
 
     // set first color to active
     this.set('activeColor', this.get('colorPalette0'));
-
-    console.log(this.get('model'))
   },
 
   tooltipX: 0,

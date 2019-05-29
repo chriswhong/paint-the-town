@@ -8,7 +8,7 @@ export default Route.extend({
 
     return {
       ...cityData,
-      meta: this.store.findAll('borocount'),
+      meta: this.store.query('borocount', { city }),
     }
   }
 });
