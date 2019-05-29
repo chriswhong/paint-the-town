@@ -1,0 +1,34 @@
+{{nav-bar}}
+<div class="row index-container">
+  <div class="col-md-6">
+    <div class="container">
+       &nbsp;
+      <p>Welcome! Paint the Town is an experimental collaborative digital art project.  We've taken parcel data for cities and allow users to "paint" them like a coloring book.  Click a city on the map to the right to get started!</p>
+
+      <p>More cities coming soon!</p>
+    </div>
+  </div>
+  <div class="col-md-6">
+    {{#mapbox-gl
+      class='index-map-container'
+      initOptions=(hash
+        style=baseStyle
+        center=mapCenter
+        zoom=mapZoom
+      )
+      mapLoaded=(action 'mapLoaded')
+      as |map|
+    }}
+      <!-- {{map.image 'cat' '/assets/cat.png' width=48 height=48}} -->
+      {{!-- `name` and `icon-image` used as positional params above --}}
+
+      <!-- {{#map.source options=(hash type='geojson' data=marker) as |source|}}
+        {{source.layer layer=(hash
+            type='symbol'
+            layout=(hash
+              icon-image='cat'
+              icon-size=0.25))}}
+      {{/map.source}} -->
+    {{/mapbox-gl}}
+  </div>
+</div>

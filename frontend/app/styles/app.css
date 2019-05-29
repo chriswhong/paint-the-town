@@ -15,6 +15,17 @@ body > .ember-view {
   left: 0;
 }
 
+.index-map-container {
+  height: 100%;
+  -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+}
+
+.index-container {
+  height: 100%
+}
+
 .navbar {
   background-color: #ffffff;
   border-bottom: 3px solid #b3bfbf;
@@ -66,6 +77,7 @@ button.pcr-button {
   font-size: 1.6rem;
   line-height: inherit;
   white-space: nowrap;
+  font-family: 'Abril Fatface';
 }
 
 .navbar-brand img {
@@ -121,4 +133,26 @@ button:focus {
   width: 112px;
   display: inline-block;
   text-align: right;
+}
+
+.city-name {
+  font-weight: 300;
+  font-family: sans-serif;
+  font-size: 1rem;
+}
+
+.mapboxgl-marker {
+  cursor: pointer;
+}
+
+.marker-label {
+  position: absolute;
+  top: 5px;
+  left: 34px;
+  font-size: 18px;
+  text-shadow: 0px 0px 11px #FFFFFF;
+}
+
+.mapboxgl-marker > svg > g > g:nth-child(2):hover {
+  fill: #7993a5;
 }
