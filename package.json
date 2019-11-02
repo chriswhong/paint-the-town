@@ -17,6 +17,6 @@
     "pg-promise": "^8.6.5",
     "socket.io": "^2.2.0",
     "sphericalmercator": "^1.0.5",
-    "yarn": "^1.15.2"
+    "yarn": "^1.17.3"
   }
 }
